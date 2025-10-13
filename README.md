@@ -60,6 +60,8 @@ The goal is to let you begin coding immediately with a consistent, reproducible 
 
 ## Installation
 
+If you're using WSL, check first [WSL installation](#wsl-setup-windows-users)
+
 Run the installer directly:
 
 ```bash
