@@ -289,9 +289,16 @@ else
   [[ -n "${CUSTOM_PKGS// }" ]] && PKGS+=(${CUSTOM_PKGS})
 
   run "Installing selected packages..."
+
   python -m pip install -q -U pip >/dev/null 2>&1 || true
-  python -m pip install -q "${PKGS[@]}" >/dev/null 2>&1 || abort "Package installation failed."
-  ok "Packages installed."
+
+  if ! python -m pip install -q "${PKGS[@]}" >/dev/null 2>&1; then
+    err "Package installation failed"
+    echo
+    python -m pip install "${PKGS[@]}" || abort "Package installation failed."
+  else
+    ok "Packages installed."
+  fi
 fi
 
 # =============================================================================
