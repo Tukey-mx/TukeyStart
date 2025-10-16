@@ -288,14 +288,21 @@ else
   read -r CUSTOM_PKGS || true
 
   if [[ -n "${CUSTOM_PKGS// }" ]]; then
-    # convierte a array por palabras
-    read -r -a EXTRAS <<< "$CUSTOM_PKGS"
+    # quitar comillas
+    CLEAN=$(printf '%s' "$CUSTOM_PKGS" | sed 's/"//g; s/'"'"'//g')
+
+    # divide en array por espacio/tab, clean way, forced globbing-avoid
+    set -f
+    IFS=$' \t' read -r -a EXTRAS <<< "$CLEAN"
+    set +f
+
+    # agregar al array principal
     PKGS+=("${EXTRAS[@]}")
   fi
 
   echo
   info "Installing selected packages..."
-  echo "→ ${PKGS[*]}"
+  printf '→ %s\n' "${PKGS[@]}"
 
   # Actualizando pip
   python -m pip install -q -U pip >/dev/null 2>&1 || true
