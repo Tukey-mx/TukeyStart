@@ -286,10 +286,18 @@ else
 
   ask "Add other packages (space-separated, ENTER to skip):"
   read -r CUSTOM_PKGS || true
-  [[ -n "${CUSTOM_PKGS// }" ]] && PKGS+=(${CUSTOM_PKGS})
 
-  run "Installing selected packages..."
+  if [[ -n "${CUSTOM_PKGS// }" ]]; then
+    # convierte a array por palabras
+    read -r -a EXTRAS <<< "$CUSTOM_PKGS"
+    PKGS+=("${EXTRAS[@]}")
+  fi
 
+  echo
+  info "Installing selected packages..."
+  echo "→ ${PKGS[*]}"
+
+  # Actualizando pip
   python -m pip install -q -U pip >/dev/null 2>&1 || true
 
   if ! python -m pip install -q "${PKGS[@]}" >/dev/null 2>&1; then
